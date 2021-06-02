@@ -1,6 +1,7 @@
 console.log('if this is logged, app.js is linked correctly');
 
 //Variables
+
 var questionNumber ='0';
 let buttonSelector;
 let allButtonsOnPage;
@@ -12,64 +13,95 @@ let countDown;
 //Start Quiz
 document.querySelector('#quizStart').addEventListener('click', startQuiz);
 
-//Functions
+//FUNCTIONS
 
 function startQuiz(){
   startTimer();
   quizProgress();
   return timeLeft, questionNumber;
-}
+};
 
 function startTimer(){
-  console.log('Start Quiz Click Registered, startTimer fired');
+  console.log('startTimer fired');
   countDown= setInterval(function(){
-    if(timeLeft <= 0){
+  if(questionNumber > 6){
       clearInterval(countDown);
-      timeLeft = 75;
+      // timeLeft = 75;
+      console.log('The last question has been answered.');
       quizEnd();
-    }
+    } else if(timeLeft <= 0){
+      clearInterval(countDown);
+      // timeLeft = 75;
+      quizEnd();
+    } else {
     timeLeftDisplay.innerHTML = timeLeft;
     timeLeft -= 1;
-    console.log(timeLeft);
+    //console.log(timeLeft);
     return timeLeft;
+    };
   } ,100)
 };
 
 function advanceQuestionNumber() {
   //advance questionNumber by 1
+  if(questionNumber <=7){
   questionNumber = parseInt(questionNumber);
   questionNumber += 1;
   questionNumber = `${questionNumber}`;
-  console.log(questionNumber);
     //update variable memory locations at global scope
-    console.log(buttonSelector);
-    console.log(allButtonsOnPage);
-  return questionNumber, buttonSelector, allButtonsOnPage;
+    console.log(`The questionNumber has been updated by advanceQuestionNumber to ${questionNumber}`);
+    //console.log(allButtonsOnPage);
+  return questionNumber, buttonSelector, allButtonsOnPage;}
+
+  quizEnd();
 };
 
 function quizProgress(eventObject){
+  console.log('*******quizProgress fired*******');
   if(timeLeft > 0){
-  console.log('Start Quiz Click Registered, quizProgress fired');
   document.querySelector(`#question${questionNumber}`).style.display = 'none';
+
   advanceQuestionNumber();
+
+  console.log(`The question number at quizProgress has been updated to ${questionNumber}`);
+
+    if (questionNumber <= 6){
   document.querySelector(`#question${questionNumber}`).style.display = 'block';
     buttonSelector = `.answerChoiceQ${questionNumber}`;
+    console.log(`The buttonSelector at quizProgress is ${buttonSelector}`);
     allButtonsOnPage = document.querySelectorAll(buttonSelector);
+    console.log(`The question number at quizProgress is ${questionNumber}`);
     for (i = 0; i < allButtonsOnPage.length; i++){
       allButtonsOnPage[i].addEventListener("click", quizProgress);
-    };
+    };}
     return questionNumber;
   }
+  console.log(`The current question number "${questionNumber}" is greater than number of questions. Firing quizEnd`);
+  questionNumber = 7;
   quizEnd()
 };
 
 function quizEnd(){
-  alert('quizEnd Fired');
-  document.querySelector(`#question${questionNumber}`).style.display = 'none';
+  console.log('quizEnd Fired');
+  //startTimer();
+  console.log(`The questionNumber at quizEnd is ${questionNumber}`);
+  console.log(`The timeLeft at quizEnd is ${timeLeft}`);
+
+  //if timer runs out before quiz end
+  if(timeLeft <= 0){ 
+    console.log(`The question number at quizEnd timeout path is ${questionNumber}`);
+    document.querySelector(`#question${questionNumber}`).style.display = 'none';
     questionNumber = 0;
+    timeLeft = 75;
+    document.querySelector(`#question${questionNumber}`).style.display = 'block';
+  } 
+
+  //if all questions completed before timer runs out
+  questionNumber = 0;
+  timeLeft = 75;
   document.querySelector(`#question${questionNumber}`).style.display = 'block';
   return questionNumber;
-}
+};
 
 // function updateAllButtonsOnPage(){
 //   for(i=0; i<allButtonsOnPage.length; i++){
