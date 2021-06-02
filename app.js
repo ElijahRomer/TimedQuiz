@@ -17,6 +17,7 @@ document.querySelector('#quizStart').addEventListener('click', startQuiz);
 function startQuiz(){
   startTimer();
   quizProgress();
+  return timeLeft, questionNumber;
 }
 
 function startTimer(){
@@ -24,10 +25,13 @@ function startTimer(){
   countDown= setInterval(function(){
     if(timeLeft <= 0){
       clearInterval(countDown);
+      timeLeft = 75;
       quizEnd();
     }
     timeLeftDisplay.innerHTML = timeLeft;
     timeLeft -= 1;
+    console.log(timeLeft);
+    return timeLeft;
   } ,100)
 };
 
@@ -44,6 +48,7 @@ function advanceQuestionNumber() {
 };
 
 function quizProgress(eventObject){
+  if(timeLeft > 0){
   console.log('Start Quiz Click Registered, quizProgress fired');
   document.querySelector(`#question${questionNumber}`).style.display = 'none';
   advanceQuestionNumber();
@@ -54,12 +59,15 @@ function quizProgress(eventObject){
       allButtonsOnPage[i].addEventListener("click", quizProgress);
     };
     return questionNumber;
+  }
+  quizEnd()
 };
 
 function quizEnd(){
   alert('quizEnd Fired');
-  questionNumber = -1;
-  quizProgress();
+  document.querySelector(`#question${questionNumber}`).style.display = 'none';
+    questionNumber = 0;
+  document.querySelector(`#question${questionNumber}`).style.display = 'block';
   return questionNumber;
 }
 
