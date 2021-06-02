@@ -1,0 +1,28 @@
+body{
+  display:block;
+}
+
+.quizQuestion{
+  display:none;
+  margin: 2px;
+}
+
+ #landingPage{
+  display: block;
+} 
+
+#restartQuiz{
+  border:2px grey solid;
+  color:#fff;
+  background-color: #000;
+}
+
+#restartQuiz:hover{
+  background-color:red;
+}
+
+#restartQuiz:active{
+  background-color: gold;
+  color:black;
+  border: 2px black solid;
+}
