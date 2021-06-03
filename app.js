@@ -1,130 +1,128 @@
 console.log('if this is logged, app.js is linked correctly');
 
 //Variables
-
-var questionNumber ='0';
+let totalNumberOfQuestions = 6;
+let questionNumber ='0';
 let buttonSelector;
 let allButtonsOnPage;
-let eventListener;
 let timeLeftDisplay = document.getElementById('timeLeftDisplay');
-let timeLeft = 75;
+let quizDurationAtStart = 75;
+let timeLeft = quizDurationAtStart;
 let countDown;
+let restartQuizButton = document.querySelector('#restartQuiz');
+let restartQuizValue = false;
+
+console.log(`restartQuizValue is ${restartQuizValue}`);
 
 //Start Quiz
 document.querySelector('#quizStart').addEventListener('click', startQuiz);
-
+//Restart Quiz
+//restartQuizButton.addEventListener('click', restartQuiz);
 //FUNCTIONS
 
 function startQuiz(){
-  startTimer();
+  console.log('STARTQUIZ FIRED');
+  console.log(`restartQuizValue at startQuiz is ${restartQuizValue}`)
+  quizTimer();
   quizProgress();
-  return timeLeft, questionNumber;
+  console.log(`restartQuizValue after startQuiz execution is ${restartQuizValue}`);
 };
 
-function startTimer(){
-  console.log('startTimer fired');
+function restartQuiz(){
+  console.log('RESTARTQUIZ FIRED')
+   restartQuizValue = true;
+  console.log(`restartQuizValue is now ${restartQuizValue}`);
+  quizTimer();
+};
+
+function quizTimer(){
+  console.log('QUIZTIMER FIRED');
+  console.log(`restartQuizValue at quizTimer is ${restartQuizValue}`);
+  if(restartQuizValue === false){
   countDown= setInterval(function(){
-  if(questionNumber > 6){
-      clearInterval(countDown);
-      // timeLeft = 75;
-      console.log('The last question has been answered.');
-      quizEnd();
-    } else if(timeLeft <= 0){
-      clearInterval(countDown);
-      // timeLeft = 75;
-      quizEnd();
-    } else {
+    if(questionNumber > totalNumberOfQuestions){
+          clearInterval(countDown);
+          console.log('quizTimer recognizes last question answered. Firing quizEnd.');
+          quizEnd();
+    }else if(timeLeft <= 0){
+          clearInterval(countDown);
+          console.log('quizTimer recognizes the timer has run out. Firing quizEnd.');
+          quizEnd();
+    }
     timeLeftDisplay.innerHTML = timeLeft;
     timeLeft -= 1;
-    //console.log(timeLeft);
     return timeLeft;
-    };
-  } ,100)
-};
+  }, 100);
+}else if(restartQuizValue === true){
+  clearInterval(countDown);
+  console.log(`quizTimer recognizes restartQuizValue as ${restartQuizValue}. Firing quizEnd.`);
+  quizEnd();
+}};
 
 function advanceQuestionNumber() {
-  //advance questionNumber by 1
-  if(questionNumber <=7){
+  if(questionNumber <=totalNumberOfQuestions /* must = the number of questions*/){
   questionNumber = parseInt(questionNumber);
   questionNumber += 1;
-  questionNumber = `${questionNumber}`;
-    //update variable memory locations at global scope
+  questionNumber = questionNumber.toString();
     console.log(`The questionNumber has been updated by advanceQuestionNumber to ${questionNumber}`);
-    //console.log(allButtonsOnPage);
-  return questionNumber, buttonSelector, allButtonsOnPage;}
+  return questionNumber;
+  }
 
   quizEnd();
 };
 
-function quizProgress(eventObject){
-  console.log('*******quizProgress fired*******');
+function quizProgress(){
+  console.log('QUIZPROGRESS FIRED');
+  console.log(`restartQuizValue at quizProgress is ${restartQuizValue}`);
   if(timeLeft > 0){
-  document.querySelector(`#question${questionNumber}`).style.display = 'none';
+    document.querySelector(`#question${questionNumber}`).style.display = 'none';
+    advanceQuestionNumber();
 
-  advanceQuestionNumber();
+    console.log(`The question number at quizProgress has been updated to ${questionNumber}`);
 
-  console.log(`The question number at quizProgress has been updated to ${questionNumber}`);
-
-    if (questionNumber <= 6){
-  document.querySelector(`#question${questionNumber}`).style.display = 'block';
-    buttonSelector = `.answerChoiceQ${questionNumber}`;
-    console.log(`The buttonSelector at quizProgress is ${buttonSelector}`);
-    allButtonsOnPage = document.querySelectorAll(buttonSelector);
-    console.log(`The question number at quizProgress is ${questionNumber}`);
-    for (i = 0; i < allButtonsOnPage.length; i++){
-      allButtonsOnPage[i].addEventListener("click", quizProgress);
-    };}
+    if (questionNumber <= totalNumberOfQuestions){
+      document.querySelector(`#question${questionNumber}`).style.display = 'block';
+      buttonSelector = `.answerChoiceQ${questionNumber}`;
+      console.log(`The buttonSelector at quizProgress is ${buttonSelector}`);
+      allButtonsOnPage = document.querySelectorAll(buttonSelector);
+      console.log(`The question number at quizProgress is ${questionNumber}`);
+      for (i = 0; i < allButtonsOnPage.length; i++){
+        allButtonsOnPage[i].addEventListener("click", quizProgress);
+      };}
     return questionNumber;
-  }
+  } else {
   console.log(`The current question number "${questionNumber}" is greater than number of questions. Firing quizEnd`);
   questionNumber = 7;
   quizEnd()
+  }
 };
 
+//instead of coding a hard timeLeft of 75 in quizEnd for each conditional path, possible to make this a variable that can be easily adjusted to preference at top? look into it
 function quizEnd(){
-  console.log('quizEnd Fired');
-  //startTimer();
+  console.log('QUIZEND FIRED');
   console.log(`The questionNumber at quizEnd is ${questionNumber}`);
   console.log(`The timeLeft at quizEnd is ${timeLeft}`);
-
-  //if timer runs out before quiz end
   if(timeLeft <= 0){ 
-    console.log(`The question number at quizEnd timeout path is ${questionNumber}`);
-    document.querySelector(`#question${questionNumber}`).style.display = 'none';
-    questionNumber = 0;
-    timeLeft = 75;
-    document.querySelector(`#question${questionNumber}`).style.display = 'block';
-  } 
-
-  //if all questions completed before timer runs out
-  questionNumber = 0;
-  timeLeft = 75;
-  document.querySelector(`#question${questionNumber}`).style.display = 'block';
-  return questionNumber;
+      console.log(`The question number at quizEnd timeout path is ${questionNumber}`);
+      document.querySelector(`#question${questionNumber}`).style.display = 'none';
+      questionNumber = 0;
+      timeLeft = quizDurationAtStart;
+      document.querySelector(`#question${questionNumber}`).style.display = 'block';
+  } else if (questionNumber >= totalNumberOfQuestions){
+      console.log(`The question number at quizEnd last question path is ${questionNumber}`);
+      questionNumber = 0;
+      timeLeft = quizDurationAtStart;
+      document.querySelector(`#question${questionNumber}`).style.display = 'block';
+  } else if (restartQuizValue === true){
+      console.log(`The restartQuizValue at quizEnd restartQuiz path is ${restartQuizValue}`);
+      document.querySelector(`#question${questionNumber}`).style.display = 'none';
+      questionNumber = 0;
+      timeLeft = quizDurationAtStart;
+      restartQuizValue = false;
+      console.log(`The restartQuizValue at quizEnd restartQuiz has been updated to ${restartQuizValue}`);
+      document.querySelector(`#question${questionNumber}`).style.display = 'block';
+  };
 };
-
-// function updateAllButtonsOnPage(){
-//   for(i=0; i<allButtonsOnPage.length; i++){
-//     allButtonsOnPage[i].addEventListener('click', quizProgress())
-//   };
-// };
-
-
-// //Event Listeners to trigger quizProgress()
-// document.querySelector('.answerChoiceQ1').addEventListener('click', quizProgress);
-
-// document.querySelector('.answerChoiceQ2').addEventListener('click', quizProgress);
-
-// document.querySelector('.answerChoiceQ3').addEventListener('click', quizProgress);
-
-// document.querySelector('.answerChoiceQ4').addEventListener('click', quizProgress);
-
-// document.querySelector('.answerChoiceQ5').addEventListener('click', quizProgress);
-
-// document.querySelector('.answerChoiceQ6').addEventListener('click', quizProgress);
-
-//Hide current page, reveal the next page.
-
 
 
 //JAVASCRIPT ELEMENTS TO CREATE*******************

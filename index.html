@@ -13,6 +13,7 @@
     <h1 id='landing-page-title'>Timed Quiz!</h1>
     <h2>The most recent score is <span id = 'most-recent-score'>5</span></h2>
     <button id='quizStart'>Click here to start the quiz!</button>
+    <h2 id="viewHighScores">View High Scores!</h2>
   </div>
 
   <div id='question1' class='quizQuestion'>
@@ -66,8 +67,14 @@
   <div id = 'answerCheck'>
     answerCheck placeholder
   </div>
+  <br><br><br><br><br>
+  <div id="restartQuiz" onclick=restartQuiz()>Click Here to Restart Quiz</div>
 
-  <div id="restartQuiz">Click Here to Restart Quiz</div>
+  <div id='highScorePage'>
+    <h2>Highscores!</h2>
+    <ul id="highScoreList">
+    </ul>
+  </div>
 
 </body>
 <script src='app.js'></script>
