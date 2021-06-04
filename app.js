@@ -1,5 +1,9 @@
 console.log('if this is logged, app.js is linked correctly');
 
+//want to add a quiz End page that displays score and then provides option to add name and input to local storage
+
+//add a highscores page that pulls from local storage
+
 //VARIABLES
 
     //can change these variables depending on quiz format.
@@ -8,7 +12,8 @@ let quizDurationAtStart = 100; //in seconds
 let quizTimerLoopDelayInterval = 1000; //default 1000 in milliseconds, sets delay for each timer tick
 
     //Do not change the below variables
-let questionNumber ='0';
+let pageNumber ='0';//previously named question number
+let highScoresPageNumber = totalNumberOfQuestions + 1;
 let buttonSelector;
 let currentAnswerButtonsShown;
 let timer = document.querySelector('#timeLeftDisplay');
@@ -20,15 +25,17 @@ let restartQuizButton = document.querySelector('#restartQuiz');
 let currentScoreDisplay = document.querySelector('#currentScoreDisplay');
 let restartQuizValue = false;
 let answerCheckHtmlElement = document.querySelector('#answerCheck');
-//let currentQuestionDisplay = document.querySelector(`#question${questionNumber}`);//breaks code?
 let currentScore = 0;
 let mostRecentScore;
 let mostRecentScoreDisplay = document.querySelector('#mostRecentScoreDisplay');
+let viewHighScoresButton = document.querySelector('#viewHighScores');
 //let answerCheckTextDisplay = document.querySelector('#answerCheck').innerHTML;
+let highScoresPage = document.querySelector('#highScorePage');
 
 //EVENT LISTENERS (answer buttons are within for loop in quizProgress.)
 startQuizButton.addEventListener('click', startQuiz);
 restartQuizButton.addEventListener('click', restartQuiz);
+viewHighScoresButton.addEventListener('click', viewHighScores);
 
 //FUNCTIONS
 function startQuiz(){
@@ -54,7 +61,7 @@ function quizTimer(){
   console.log(timeLeftHtmlElement);
   if(restartQuizValue === false){
   countDown= setInterval(function(){
-    if(questionNumber > totalNumberOfQuestions){
+    if(pageNumber > totalNumberOfQuestions){
           clearInterval(countDown);
           console.log('quizTimer recognizes last question answered. Firing quizEnd.');
           quizEnd();
@@ -73,34 +80,34 @@ function quizTimer(){
   quizEnd();
 }};
 
-function advanceQuestionNumber() {
-  console.log(`ADVANCEQUESTIONNUMBER FIRED`)
-  questionNumber = parseInt(questionNumber);
-  questionNumber += 1;
-  questionNumber = questionNumber.toString();
-    console.log(`The questionNumber has been updated by advanceQuestionNumber to ${questionNumber}`);
-  return questionNumber;
+function advancePageNumber() {
+  console.log(`ADVANCEPAGENUMBER FIRED`)
+  pageNumber = parseInt(pageNumber);
+  pageNumber += 1;
+  pageNumber = pageNumber.toString();
+    console.log(`The pageNumber has been updated by advancePageNumber to ${pageNumber}`);
+  return pageNumber;
 };
 
 function quizProgress(){
   console.log('QUIZPROGRESS FIRED');
   if(timeLeft > 0){
-    document.querySelector(`#question${questionNumber}`).style.display = 'none';
-    advanceQuestionNumber();
-    console.log(`The question number at quizProgress has been updated to ${questionNumber}`);
-    if (questionNumber <= totalNumberOfQuestions){
-      document.querySelector(`#question${questionNumber}`).style.display = 'block';
-      buttonSelector = `.answerChoiceQ${questionNumber}`;
+    document.querySelector(`#question${pageNumber}`).style.display = 'none';
+    advancePageNumber();
+    console.log(`The pageNumber at quizProgress has been updated to ${pageNumber}`);
+    if (pageNumber <= totalNumberOfQuestions){
+      document.querySelector(`#question${pageNumber}`).style.display = 'block';
+      buttonSelector = `.answerChoiceQ${pageNumber}`;
       console.log(`The buttonSelector at quizProgress is ${buttonSelector}`);
       currentAnswerButtonsShown = document.querySelectorAll(buttonSelector);
-      console.log(`The question number at quizProgress is ${questionNumber}`);
+      console.log(`The pageNumber at quizProgress is ${pageNumber}`);
       for (i = 0; i < currentAnswerButtonsShown.length; i++){
         currentAnswerButtonsShown[i].addEventListener("click", quizProgress);
         currentAnswerButtonsShown[i].addEventListener("click", answerCheck);
       };}
-    return questionNumber;
+    return pageNumber;
   } else {
-  console.log(`quizProgress recognized the current question number "${questionNumber}" is greater than number of questions. Firing quizEnd`);
+  console.log(`quizProgress recognized the current question number "${pageNumber}" is greater than number of questions. Firing quizEnd`);
   quizEnd()
   }
 };
@@ -116,9 +123,22 @@ function answerCheck(eventObject){
   document.querySelector('#currentScore').innerHTML = currentScore;
 };
 
+function viewHighScores(){
+  console.log('VIEWHIGHSCORES FIRED');
+  document.querySelector('#returnToMainMenu').addEventListener('click', returnToPreviousScreen);
+  document.querySelector(`#question0`).style.display = 'none';
+  highScoresPage.style.display = 'block';
+};
+
+function returnToPreviousScreen(){
+  console.log('RETURNTOPREVIOUSSCREEN FIRED');
+  document.querySelector(`#question${pageNumber}`).style.display = 'block';
+  highScoresPage.style.display = 'none';
+}
+
 function quizEnd(){
   console.log('QUIZEND FIRED');
-  console.log(`The questionNumber at quizEnd is ${questionNumber}`);
+  console.log(`The pageNumber at quizEnd is ${pageNumber}`);
   console.log(`The timeLeft at quizEnd is ${timeLeft}`);
   console.log(`The currentScore at quizEnd is ${currentScore}`);
 
@@ -133,23 +153,23 @@ function quizEnd(){
   document.querySelector('#currentScore').innerHTML = currentScore;
   timeLeftHtmlElement.innerHTML = 100;
   if(timeLeft <= 0){ 
-      console.log(`The question number at quizEnd timeout path is ${questionNumber}`);
+      console.log(`The question number at quizEnd timeout path is ${pageNumber}`);
       timeLeft = quizDurationAtStart;
-      document.querySelector(`#question${questionNumber}`).style.display = 'none';
-      questionNumber = 0;
-      document.querySelector(`#question${questionNumber}`).style.display = 'block';
-  } else if (questionNumber >= totalNumberOfQuestions){
-      console.log(`The question number at quizEnd last question path is ${questionNumber}`);
+      document.querySelector(`#question${pageNumber}`).style.display = 'none';
+      pageNumber = 0;
+      document.querySelector(`#question${pageNumber}`).style.display = 'block';
+  } else if (pageNumber >= totalNumberOfQuestions){
+      console.log(`The pageNumber at quizEnd last question path is ${pageNumber}`);
       timeLeft = quizDurationAtStart;
-      questionNumber = 0;
-      document.querySelector(`#question${questionNumber}`).style.display = 'block';
+      pageNumber = 0;
+      document.querySelector(`#question${pageNumber}`).style.display = 'block';
   } else if (restartQuizValue === true){
       console.log(`The restartQuizValue at quizEnd restartQuiz path is ${restartQuizValue}`);
       timeLeft = quizDurationAtStart;
       restartQuizValue = false;
-      document.querySelector(`#question${questionNumber}`).style.display = 'none';
-      questionNumber = 0;
-      document.querySelector(`#question${questionNumber}`).style.display = 'block';
+      document.querySelector(`#question${pageNumber}`).style.display = 'none';
+      pageNumber = 0;
+      document.querySelector(`#question${pageNumber}`).style.display = 'block';
   };
 };
 
