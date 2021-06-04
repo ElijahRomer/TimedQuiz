@@ -75,6 +75,19 @@
     <button class="answerChoiceQ6" id="incorrect">incorrect</button>
   </div>
 
+  <div id='question7' class='quizEndPage'>
+    <h1>You have finished the quiz!</h1>
+    <form id= "saveScore" action="#">
+      <h2>Enter your name and click submit to save your score.</h2>
+      <label for="userNameInput">Name</label>
+      <input id="userNameInput" type="text" placeholder ="John Doe">
+      <p>Your Score Was: <span id=scoreSubmitValue></span></p>
+      <button type="submit">Click here to record your score</button>
+    </form>
+    <br>
+    <a class= 'returnToMainMenu' href='#'>Click Here to return to main menu.</a>
+  </div>
+
   <div id = 'answerCheck'></div>
 
 <br>
@@ -84,7 +97,7 @@
     <h2>Highscores!</h2>
     <ul id="highScoreList">
     </ul>
-    <a id= 'returnToMainMenu' href='#'>Click Here to return to main menu.</a>
+    <a class= 'returnToMainMenu' href='#'>Click Here to return to main menu.</a>
   </div>
 
 </body>

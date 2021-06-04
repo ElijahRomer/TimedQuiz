@@ -31,13 +31,25 @@ let mostRecentScoreDisplay = document.querySelector('#mostRecentScoreDisplay');
 let viewHighScoresButton = document.querySelector('#viewHighScores');
 //let answerCheckTextDisplay = document.querySelector('#answerCheck').innerHTML;
 let highScoresPage = document.querySelector('#highScorePage');
+let returnToMainMenuButtons = document.querySelectorAll('.returnToMainMenu');
 
 //EVENT LISTENERS (answer buttons are within for loop in quizProgress.)
-startQuizButton.addEventListener('click', startQuiz);
-restartQuizButton.addEventListener('click', restartQuiz);
-viewHighScoresButton.addEventListener('click', viewHighScores);
+
+
+document.addEventListener('DOMContentLoaded', loadEventListeners);
 
 //FUNCTIONS
+
+function loadEventListeners(){
+  console.log('LOADEVENTLISTENERS FIRED');
+    startQuizButton.addEventListener('click', startQuiz);
+    restartQuizButton.addEventListener('click', restartQuiz);
+    viewHighScoresButton.addEventListener('click', viewHighScores);
+    for (i = 0; i < returnToMainMenuButtons.length; i++){
+      returnToMainMenuButtons[i].addEventListener('click', returnToMainMenu)
+    };
+};
+
 function startQuiz(){
   console.log('STARTQUIZ FIRED');
   timer.style.display = 'block';
@@ -125,13 +137,15 @@ function answerCheck(eventObject){
 
 function viewHighScores(){
   console.log('VIEWHIGHSCORES FIRED');
-  document.querySelector('#returnToMainMenu').addEventListener('click', returnToPreviousScreen);
+  // document.querySelector('.returnToMainMenu').addEventListener('click', returnToMainMenu);
   document.querySelector(`#question0`).style.display = 'none';
   highScoresPage.style.display = 'block';
 };
 
-function returnToPreviousScreen(){
-  console.log('RETURNTOPREVIOUSSCREEN FIRED');
+function returnToMainMenu(){
+  console.log('RETURNTOMAINMENU FIRED');
+  document.querySelector(`#question${pageNumber}`).style.display = 'none';
+  pageNumber = 0;
   document.querySelector(`#question${pageNumber}`).style.display = 'block';
   highScoresPage.style.display = 'none';
 }
@@ -145,23 +159,26 @@ function quizEnd(){
   mostRecentScore = currentScore;
   currentScore = 0;
   timer.style.display = 'none';
+  
   restartQuizButton.style.display = 'none';
   currentScoreDisplay.style.display = 'none';
   answerCheckHtmlElement.style.display = 'none';
   mostRecentScoreDisplay.style.display = 'block';
+  viewHighScoresButton.style.display = 'block';
   document.querySelector('#mostRecentScore').innerHTML = mostRecentScore;
+  document.querySelector('#scoreSubmitValue').innerHTML = mostRecentScore;
   document.querySelector('#currentScore').innerHTML = currentScore;
   timeLeftHtmlElement.innerHTML = 100;
   if(timeLeft <= 0){ 
       console.log(`The question number at quizEnd timeout path is ${pageNumber}`);
       timeLeft = quizDurationAtStart;
       document.querySelector(`#question${pageNumber}`).style.display = 'none';
-      pageNumber = 0;
+      pageNumber = highScoresPageNumber;
       document.querySelector(`#question${pageNumber}`).style.display = 'block';
   } else if (pageNumber >= totalNumberOfQuestions){
       console.log(`The pageNumber at quizEnd last question path is ${pageNumber}`);
       timeLeft = quizDurationAtStart;
-      pageNumber = 0;
+      // pageNumber = 0;
       document.querySelector(`#question${pageNumber}`).style.display = 'block';
   } else if (restartQuizValue === true){
       console.log(`The restartQuizValue at quizEnd restartQuiz path is ${restartQuizValue}`);
