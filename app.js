@@ -71,7 +71,7 @@ function quizTimer(){
   clearInterval(countDown);
   console.log(`quizTimer recognizes restartQuizValue as ${restartQuizValue}. Firing quizEnd.`);
   quizEnd();
-}};
+}}; 
 
 function advanceQuestionNumber() {
   console.log(`ADVANCEQUESTIONNUMBER FIRED`)
