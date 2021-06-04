@@ -1,43 +1,57 @@
 console.log('if this is logged, app.js is linked correctly');
 
-//Variables
-let totalNumberOfQuestions = 6;
+//VARIABLES
+
+    //can change these variables depending on quiz format.
+let totalNumberOfQuestions = 6; //must also add additional questions to the HTML.
+let quizDurationAtStart = 100; //in seconds
+let quizTimerLoopDelayInterval = 1000; //default 1000 in milliseconds, sets delay for each timer tick
+
+    //Do not change the below variables
 let questionNumber ='0';
 let buttonSelector;
-let allButtonsOnPage;
-let timeLeftDisplay = document.getElementById('timeLeftDisplay');
-let quizDurationAtStart = 75;
+let currentAnswerButtonsShown;
+let timer = document.querySelector('#timeLeftDisplay');
+let timeLeftHtmlElement = document.querySelector('#timeLeft');
 let timeLeft = quizDurationAtStart;
 let countDown;
+let startQuizButton = document.querySelector('#quizStart');
 let restartQuizButton = document.querySelector('#restartQuiz');
+let currentScoreDisplay = document.querySelector('#currentScoreDisplay');
 let restartQuizValue = false;
+let answerCheckHtmlElement = document.querySelector('#answerCheck');
+//let currentQuestionDisplay = document.querySelector(`#question${questionNumber}`);//breaks code?
+let currentScore = 0;
+let mostRecentScore;
+let mostRecentScoreDisplay = document.querySelector('#mostRecentScoreDisplay');
+//let answerCheckTextDisplay = document.querySelector('#answerCheck').innerHTML;
 
-console.log(`restartQuizValue is ${restartQuizValue}`);
+//EVENT LISTENERS (answer buttons are within for loop in quizProgress.)
+startQuizButton.addEventListener('click', startQuiz);
+restartQuizButton.addEventListener('click', restartQuiz);
 
-//Start Quiz
-document.querySelector('#quizStart').addEventListener('click', startQuiz);
-//Restart Quiz
-//restartQuizButton.addEventListener('click', restartQuiz);
 //FUNCTIONS
-
 function startQuiz(){
   console.log('STARTQUIZ FIRED');
-  console.log(`restartQuizValue at startQuiz is ${restartQuizValue}`)
+  timer.style.display = 'block';
+  restartQuizButton.style.display = 'block';
+  currentScoreDisplay.style.display = 'block';
+  answerCheckHtmlElement.style.display = 'block';
   quizTimer();
   quizProgress();
-  console.log(`restartQuizValue after startQuiz execution is ${restartQuizValue}`);
+  console.log('STARTQUIZ FINISHED');
 };
 
 function restartQuiz(){
   console.log('RESTARTQUIZ FIRED')
    restartQuizValue = true;
-  console.log(`restartQuizValue is now ${restartQuizValue}`);
+  console.log(`restartQuizValue is now ${restartQuizValue}. Firing quizTimer.`);
   quizTimer();
 };
 
 function quizTimer(){
   console.log('QUIZTIMER FIRED');
-  console.log(`restartQuizValue at quizTimer is ${restartQuizValue}`);
+  console.log(timeLeftHtmlElement);
   if(restartQuizValue === false){
   countDown= setInterval(function(){
     if(questionNumber > totalNumberOfQuestions){
@@ -49,10 +63,10 @@ function quizTimer(){
           console.log('quizTimer recognizes the timer has run out. Firing quizEnd.');
           quizEnd();
     }
-    timeLeftDisplay.innerHTML = timeLeft;
     timeLeft -= 1;
+    timeLeftHtmlElement.innerHTML = timeLeft;
     return timeLeft;
-  }, 100);
+  }, quizTimerLoopDelayInterval);
 }else if(restartQuizValue === true){
   clearInterval(countDown);
   console.log(`quizTimer recognizes restartQuizValue as ${restartQuizValue}. Firing quizEnd.`);
@@ -60,66 +74,81 @@ function quizTimer(){
 }};
 
 function advanceQuestionNumber() {
-  if(questionNumber <=totalNumberOfQuestions /* must = the number of questions*/){
+  console.log(`ADVANCEQUESTIONNUMBER FIRED`)
   questionNumber = parseInt(questionNumber);
   questionNumber += 1;
   questionNumber = questionNumber.toString();
     console.log(`The questionNumber has been updated by advanceQuestionNumber to ${questionNumber}`);
   return questionNumber;
-  }
-
-  quizEnd();
 };
 
 function quizProgress(){
   console.log('QUIZPROGRESS FIRED');
-  console.log(`restartQuizValue at quizProgress is ${restartQuizValue}`);
   if(timeLeft > 0){
     document.querySelector(`#question${questionNumber}`).style.display = 'none';
     advanceQuestionNumber();
-
     console.log(`The question number at quizProgress has been updated to ${questionNumber}`);
-
     if (questionNumber <= totalNumberOfQuestions){
       document.querySelector(`#question${questionNumber}`).style.display = 'block';
       buttonSelector = `.answerChoiceQ${questionNumber}`;
       console.log(`The buttonSelector at quizProgress is ${buttonSelector}`);
-      allButtonsOnPage = document.querySelectorAll(buttonSelector);
+      currentAnswerButtonsShown = document.querySelectorAll(buttonSelector);
       console.log(`The question number at quizProgress is ${questionNumber}`);
-      for (i = 0; i < allButtonsOnPage.length; i++){
-        allButtonsOnPage[i].addEventListener("click", quizProgress);
+      for (i = 0; i < currentAnswerButtonsShown.length; i++){
+        currentAnswerButtonsShown[i].addEventListener("click", quizProgress);
+        currentAnswerButtonsShown[i].addEventListener("click", answerCheck);
       };}
     return questionNumber;
   } else {
-  console.log(`The current question number "${questionNumber}" is greater than number of questions. Firing quizEnd`);
-  questionNumber = 7;
+  console.log(`quizProgress recognized the current question number "${questionNumber}" is greater than number of questions. Firing quizEnd`);
   quizEnd()
   }
 };
 
-//instead of coding a hard timeLeft of 75 in quizEnd for each conditional path, possible to make this a variable that can be easily adjusted to preference at top? look into it
+function answerCheck(eventObject){
+  console.log(`ANSWERCHECK FIRED`);
+    if(eventObject.target.id === "correct"){
+      currentScore += 1;
+      document.querySelector('#answerCheck').innerHTML = 'Your answer was CORRECT! +1 point.';
+    } else if(eventObject.target.id === "incorrect"){
+      document.querySelector('#answerCheck').innerHTML = 'Your answer was INCORRECT! 0 points.';
+    };
+  document.querySelector('#currentScore').innerHTML = currentScore;
+};
+
 function quizEnd(){
   console.log('QUIZEND FIRED');
   console.log(`The questionNumber at quizEnd is ${questionNumber}`);
   console.log(`The timeLeft at quizEnd is ${timeLeft}`);
+  console.log(`The currentScore at quizEnd is ${currentScore}`);
+
+  mostRecentScore = currentScore;
+  currentScore = 0;
+  timer.style.display = 'none';
+  restartQuizButton.style.display = 'none';
+  currentScoreDisplay.style.display = 'none';
+  answerCheckHtmlElement.style.display = 'none';
+  mostRecentScoreDisplay.style.display = 'block';
+  document.querySelector('#mostRecentScore').innerHTML = mostRecentScore;
+  document.querySelector('#currentScore').innerHTML = currentScore;
+  timeLeftHtmlElement.innerHTML = 100;
   if(timeLeft <= 0){ 
       console.log(`The question number at quizEnd timeout path is ${questionNumber}`);
+      timeLeft = quizDurationAtStart;
       document.querySelector(`#question${questionNumber}`).style.display = 'none';
       questionNumber = 0;
-      timeLeft = quizDurationAtStart;
       document.querySelector(`#question${questionNumber}`).style.display = 'block';
   } else if (questionNumber >= totalNumberOfQuestions){
       console.log(`The question number at quizEnd last question path is ${questionNumber}`);
-      questionNumber = 0;
       timeLeft = quizDurationAtStart;
+      questionNumber = 0;
       document.querySelector(`#question${questionNumber}`).style.display = 'block';
   } else if (restartQuizValue === true){
       console.log(`The restartQuizValue at quizEnd restartQuiz path is ${restartQuizValue}`);
-      document.querySelector(`#question${questionNumber}`).style.display = 'none';
-      questionNumber = 0;
       timeLeft = quizDurationAtStart;
       restartQuizValue = false;
-      console.log(`The restartQuizValue at quizEnd restartQuiz has been updated to ${restartQuizValue}`);
+      document.querySelector(`#question${questionNumber}`).style.display = 'none';
+      questionNumber = 0;
       document.querySelector(`#question${questionNumber}`).style.display = 'block';
   };
 };

@@ -8,13 +8,24 @@
   <link rel='stylesheet' href='Assets/style.css'>
 </head>
 <body>
-  <h3 id="timer">Time Remaining: <span id="timeLeftDisplay">75</span> Seconds</h3>
-  <div id='question0'>
+
+  <h3 id="timeLeftDisplay">Time Remaining: <span id="timeLeft"></span> Seconds</h3>
+
+  <h3 id='currentScoreDisplay'>Your Score Is: <span id="currentScore">0</span></h3>
+
+  <!-- think about adding semantic tags to this document -->
+  <div id='question0' class='landingPage'>
     <h1 id='landing-page-title'>Timed Quiz!</h1>
-    <h2>The most recent score is <span id = 'most-recent-score'>5</span></h2>
+    <h2 id = 'mostRecentScoreDisplay'>Your most recent score was <span id = 'mostRecentScore'></span>.</h2>
     <button id='quizStart'>Click here to start the quiz!</button>
     <h2 id="viewHighScores">View High Scores!</h2>
   </div>
+
+<!-- When adding questions, add as many questions and as many answer choices as you would like. 
+  
+  For additional questions, make sure to update the total number of questions variable within the JavaScript, as well as time left at quiz start if you wish to adjust that. 
+
+  Be sure to correctly set the id attribute correct or incorrect for each answer to ensure proper quiz functioning. -->
 
   <div id='question1' class='quizQuestion'>
     <h1>Question 1</h1>
@@ -64,11 +75,10 @@
     <button class="answerChoiceQ6" id="incorrect">incorrect</button>
   </div>
 
-  <div id = 'answerCheck'>
-    answerCheck placeholder
-  </div>
-  <br><br><br><br><br>
-  <div id="restartQuiz" onclick=restartQuiz()>Click Here to Restart Quiz</div>
+  <div id = 'answerCheck'></div>
+
+<br>
+  <div id="restartQuiz">Click Here to Restart Quiz</div>
 
   <div id='highScorePage'>
     <h2>Highscores!</h2>

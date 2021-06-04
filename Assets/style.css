@@ -11,10 +11,30 @@ body{
   display: block;
 } 
 
+#currentScoreDisplay{
+  display: none;
+}
+
+#timeLeftDisplay{
+  display: none;
+}
+
+#mostRecentScoreDisplay{
+  display: none;
+}
+
+#answerCheck{
+  display: none;
+}
+
 #restartQuiz{
+  display:none;
   border:2px grey solid;
   color:#fff;
   background-color: #000;
+  text-align: center;
+  width: 50%;
+  margin:0 auto;
 }
 
 #restartQuiz:hover{
