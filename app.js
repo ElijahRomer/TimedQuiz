@@ -12,6 +12,7 @@ let quizDurationAtStart = 100; //in seconds
 let quizTimerLoopDelayInterval = 1000; //default 1000 in milliseconds, sets delay for each timer tick
 
     //Do not change the below variables
+
 let pageNumber ='0';//previously named question number
 let highScoresPageNumber = totalNumberOfQuestions + 1;
 let buttonSelector;
@@ -26,12 +27,15 @@ let currentScoreDisplay = document.querySelector('#currentScoreDisplay');
 let restartQuizValue = false;
 let answerCheckHtmlElement = document.querySelector('#answerCheck');
 let currentScore = 0;
-let mostRecentScore;
+let mostRecentScore = 0;
 let mostRecentScoreDisplay = document.querySelector('#mostRecentScoreDisplay');
 let viewHighScoresButton = document.querySelector('#viewHighScores');
+let clearHighScoreListButton = document.querySelector('#clearHighScoreList');
+
 //let answerCheckTextDisplay = document.querySelector('#answerCheck').innerHTML;
 let highScoresPage = document.querySelector('#highScorePage');
 let returnToMainMenuButtons = document.querySelectorAll('.returnToMainMenu');
+
 
 //EVENT LISTENERS (answer buttons are within for loop in quizProgress.)
 
@@ -42,13 +46,19 @@ document.addEventListener('DOMContentLoaded', loadEventListeners);
 
 function loadEventListeners(){
   console.log('LOADEVENTLISTENERS FIRED');
+    getHighScoreList();
     startQuizButton.addEventListener('click', startQuiz);
     restartQuizButton.addEventListener('click', restartQuiz);
     viewHighScoresButton.addEventListener('click', viewHighScores);
+    saveScoreForm.addEventListener('submit', addHighScore);
+    clearHighScoreListButton.addEventListener('click', clearHighScoreList);
     for (i = 0; i < returnToMainMenuButtons.length; i++){
       returnToMainMenuButtons[i].addEventListener('click', returnToMainMenu)
     };
+    //there is another event listener within a for loop in the quizProgress function, not included here as it must dynamically progress when a new question is answered.
 };
+
+
 
 function startQuiz(){
   console.log('STARTQUIZ FIRED');
@@ -61,12 +71,16 @@ function startQuiz(){
   console.log('STARTQUIZ FINISHED');
 };
 
+
+
 function restartQuiz(){
   console.log('RESTARTQUIZ FIRED')
    restartQuizValue = true;
   console.log(`restartQuizValue is now ${restartQuizValue}. Firing quizTimer.`);
   quizTimer();
 };
+
+
 
 function quizTimer(){
   console.log('QUIZTIMER FIRED');
@@ -92,6 +106,8 @@ function quizTimer(){
   quizEnd();
 }};
 
+
+
 function advancePageNumber() {
   console.log(`ADVANCEPAGENUMBER FIRED`)
   pageNumber = parseInt(pageNumber);
@@ -100,6 +116,8 @@ function advancePageNumber() {
     console.log(`The pageNumber has been updated by advancePageNumber to ${pageNumber}`);
   return pageNumber;
 };
+
+
 
 function quizProgress(){
   console.log('QUIZPROGRESS FIRED');
@@ -124,6 +142,8 @@ function quizProgress(){
   }
 };
 
+
+
 function answerCheck(eventObject){
   console.log(`ANSWERCHECK FIRED`);
     if(eventObject.target.id === "correct"){
@@ -135,12 +155,15 @@ function answerCheck(eventObject){
   document.querySelector('#currentScore').innerHTML = currentScore;
 };
 
+
+
 function viewHighScores(){
   console.log('VIEWHIGHSCORES FIRED');
-  // document.querySelector('.returnToMainMenu').addEventListener('click', returnToMainMenu);
   document.querySelector(`#question0`).style.display = 'none';
   highScoresPage.style.display = 'block';
 };
+
+
 
 function returnToMainMenu(){
   console.log('RETURNTOMAINMENU FIRED');
@@ -149,6 +172,135 @@ function returnToMainMenu(){
   document.querySelector(`#question${pageNumber}`).style.display = 'block';
   highScoresPage.style.display = 'none';
 }
+
+
+
+
+let highScoreListUL = document.querySelector('#highScoreList');
+let submitScoreButton = document.querySelector('#submitScoreButton');
+let userNameInputField = document.querySelector('#userNameInput');
+let saveScoreForm = document.querySelector('#saveScoreForm');
+let userNameScoreSubmitString;
+let scoreSubmitTimeStamp;
+// let highScoreListArray = [];
+let formattedTimeStamp;
+
+console.log(highScoreListUL);
+console.log(userNameInputField);
+console.log(highScoreListUL);
+console.log(submitScoreButton);
+console.log(saveScoreForm);
+
+function addHighScore(eventObject){
+  console.log('ADDHIGHSCORE FIRED');
+  eventObject.preventDefault();
+  formattedTimeStamp = getFormattedTimeStamp();
+  console.log(`Timestamp at addHighScore is ${formattedTimeStamp}`);
+  // console.log(userNameInput.value);
+  if(userNameInput.value == ''){
+    alert(`Please Enter a name.`)
+  } else {
+  createUserNameScoreSubmitString();
+  console.log(userNameScoreSubmitString);
+  insertScoreIntoHighScoreList();
+  storeScoreInLocalStorage(userNameScoreSubmitString);
+  }
+  alert('Your score has been saved.');
+  returnToMainMenu();
+};
+
+
+
+function getFormattedTimeStamp(){
+  console.log('GETFORMATTEDTIMESTAMP FIRED')
+  scoreSubmitTimeStamp = new Date();
+  let dateFormat = {
+    year:'numeric',
+    month:'long',
+    day:'2-digit',
+    hour:'numeric',
+    minute:'numeric',
+  };
+  let scoreSubmitTimeStampFormatted = new Intl.DateTimeFormat('en', dateFormat).format(scoreSubmitTimeStamp);
+  console.log(scoreSubmitTimeStampFormatted);
+  return scoreSubmitTimeStampFormatted;
+}
+
+
+
+function createUserNameScoreSubmitString(){
+  console.log(`CREATEUSERNAMESCORESUBMITSTRING FIRED`);
+  console.log(userNameInput.value);
+  if(userNameInput.value === null){
+    alert(`Please Enter your name.`)
+  }
+  userNameScoreSubmitString = 
+  `${userNameInput.value} -- Score: ${mostRecentScore} -- ${formattedTimeStamp}`;
+  console.log(userNameScoreSubmitString);
+  return userNameScoreSubmitString;
+}
+
+
+
+function insertScoreIntoHighScoreList(){
+  console.log(`INSERTSCOREINTOHIGHSCORELIST FIRED`);
+  let li = document.createElement('li');
+  li.className = 'highScoreEntry';
+  li.appendChild(document.createTextNode(userNameScoreSubmitString));
+  highScoreListUL.appendChild(li);
+};
+
+
+
+function getHighScoreList(){
+  console.log(`GETHIGHSCORELIST FIRED`);
+  let highScoreListArray;
+      if (localStorage.getItem('highScoreList') === null){
+        console.log(`getHighScoreList recognizes no value present for highScoreList in localStorage. Setting to an empty array.`);
+        highScoreListArray = [];
+      } else {
+        console.log(`getHighScoreList recognizes value is present for highScoreList in localStorage. Parsing to JSON and inserting array items into dom.`)
+
+        highScoreListArray = JSON.parse(localStorage.getItem('highScoreList'));
+        console.log(`highScoreListArray is now ${highScoreListArray}`);
+      };
+  highScoreListArray.forEach(function(scoreString){
+    let li = document.createElement('li');
+    li.className = 'highScoreEntry';
+    li.appendChild(document.createTextNode(scoreString));
+    highScoreListUL.appendChild(li);
+  })
+};
+
+
+
+function storeScoreInLocalStorage(scoreString){
+  console.log(`STORESCOREINLOCALSTORAGE FIRED`);
+  let highScoreListArray;
+  if (localStorage.getItem('highScoreList') === null){
+    highScoreListArray = [];
+  } else {
+    highScoreListArray = JSON.parse(localStorage.getItem('highScoreList'));
+  };
+
+  highScoreListArray.push(scoreString);
+
+  localStorage.setItem('highScoreList', JSON.stringify(highScoreListArray));
+};
+
+
+
+function clearHighScoreList(){
+  console.log('CLEARHIGHSCORELIST FIRED');
+  if(confirm('Are you sure you want to clear ALL High Scores?')){
+  localStorage.clear();
+    while(highScoreListUL.firstChild) {
+      highScoreListUL.removeChild(highScoreListUL.firstChild)
+    }
+  }
+};
+
+
 
 function quizEnd(){
   console.log('QUIZEND FIRED');
@@ -169,6 +321,7 @@ function quizEnd(){
   document.querySelector('#scoreSubmitValue').innerHTML = mostRecentScore;
   document.querySelector('#currentScore').innerHTML = currentScore;
   timeLeftHtmlElement.innerHTML = 100;
+
   if(timeLeft <= 0){ 
       console.log(`The question number at quizEnd timeout path is ${pageNumber}`);
       timeLeft = quizDurationAtStart;
