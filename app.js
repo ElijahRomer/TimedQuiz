@@ -200,13 +200,13 @@ function addHighScore(eventObject){
   if(userNameInput.value == ''){
     alert(`Please Enter a name.`)
   } else {
-  createUserNameScoreSubmitString();
-  console.log(userNameScoreSubmitString);
-  insertScoreIntoHighScoreList();
-  storeScoreInLocalStorage(userNameScoreSubmitString);
+    createUserNameScoreSubmitString();
+    console.log(userNameScoreSubmitString);
+    insertScoreIntoHighScoreList();
+    storeScoreInLocalStorage(userNameScoreSubmitString);
+    alert('Your score has been saved.');
+    returnToMainMenu();
   }
-  alert('Your score has been saved.');
-  returnToMainMenu();
 };
 
 
