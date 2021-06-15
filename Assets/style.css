@@ -1,10 +1,49 @@
+:root{
+--salmon: #FC766AFF;
+--light: #B0B8B4FF;
+--dark: #184A45FF;
+
+}
+
 body{
   display:block;
+  background-color: var(--light);
+  font-family: 'Ubuntu', sans-serif;
+}
+
+#quizStart{
+  border-radius: 10px;
+  background-color: rgb(197, 0, 0);
+  font-family: 'Ubuntu', sans-serif;
+  font-size: larger;
+  width: 50%;
+  height: 30%;
+}
+
+#quizStart:hover{
+  transition: 0.3s background-color;
+  transition: 0.3s color;
+  transition: 0.3s box-shadow;
+  color: yellow;
+  background-color: red;
+  box-shadow: 1px 1px 2px black, 0 0 25px red, 0 0 5px rgb(131, 0, 0);
+}
+
+#currentScoreDisplay {
+  position: absolute;
+  right:10px;
+  top:0px;
 }
 
 .quizQuestion{
-  display:none;
-  margin: 2px;
+  display: none;
+  background-color: var(--salmon);
+  border: var(--dark) solid 5px;
+  border-radius: 15px;
+  text-align: center;
+  margin: 10px;
+  height: 300px;
+  box-shadow: 10px 10px 10px black;
 }
 
 .quizEndPage{
@@ -12,33 +51,23 @@ body{
   margin: 2px;
 }
 
- #landingPage{
+ .landingPage{
   display: block;
+  background-color: var(--salmon);
+  border: var(--dark) solid 5px;
+  border-radius: 15px;
+  text-align: center;
+  margin: 10px;
+  height: 300px;
+  box-shadow: 10px 10px 10px black;
 } 
 
-#currentScoreDisplay{
-  display: none;
-}
-
-#timeLeftDisplay{
-  display: none;
-}
-
-#mostRecentScoreDisplay{
-  display: none;
-}
-
-#answerCheck{
-  display: none;
-}
-
-#highScorePage{
-  display:none;
-}
 
 #viewHighScores{
-  width:25vw;
-  border: 2px solid black;
+  position: relative;
+  width: 50%;
+  margin: 5% auto 0 auto;
+  border: 2px solid green;
   text-align: center;
   color:white;
   background-color: #333;
@@ -75,3 +104,24 @@ body{
   color:black;
   border: 2px black solid;
 }
+
+#currentScoreDisplay{
+  display: none;
+}
+
+#timeLeftDisplay{
+  display: none;
+}
+
+#mostRecentScoreDisplay{
+  display: none;
+}
+
+#answerCheck{
+  display: none;
+}
+
+#highScorePage{
+  display:none;
+}
+

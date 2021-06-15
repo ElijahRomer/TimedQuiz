@@ -5,7 +5,7 @@ console.log('if this is logged, app.js is linked correctly');
     //QUIZ CONTROL PANEL can change these variables depending on quiz format.
 let totalNumberOfQuestions = 6; //must also add additional questions to the HTML.
 let quizDurationAtStart = 100; //in seconds
-let quizTimerLoopDelayInterval = 1000; //default 1000 in milliseconds, sets delay for each timer tick
+let quizTimerLoopDelayInterval = 10000; //default 1000 in milliseconds, sets delay for each timer tick
 let incorrectAnswerTimeLeftPenalty = 10; //Number of seconds subtracted from timer for incorrect answer
 
 //DO NOT CHANGE BELOW VARIABLES
@@ -160,13 +160,31 @@ function quizProgress(eventObject){
 
 function answerCheck(eventObject){
   console.log(`ANSWERCHECK FIRED`);
+  
     if(eventObject.target.id === "correct"){
       currentScore += 1;
-      document.querySelector('#answerCheck').innerHTML = 'Your answer was CORRECT! +1 point.';
+      revealAnswerCheck();
+      answerCheckHtmlElement.innerHTML = 'Your answer was CORRECT! +1 point.';
+      answerCheckHtmlElement.style.backgroundColor = 'limegreen';
+      setTimeout(hideAnswerCheck, 2000);
+      
     } else if(eventObject.target.id === "incorrect"){
-      document.querySelector('#answerCheck').innerHTML = 'Your answer was INCORRECT! 0 points.';
+      revealAnswerCheck();
+      answerCheckHtmlElement.innerHTML = 'Your answer was INCORRECT! 0 points.';
+      answerCheckHtmlElement.style.backgroundColor = 'red';
+      setTimeout(hideAnswerCheck, 2000);
     };
   document.querySelector('#currentScore').innerHTML = currentScore;
+};
+
+function revealAnswerCheck(){
+  console.log(`REVEALANSWERCHECK FIRED`);
+  answerCheckHtmlElement.style.display = 'block';
+}
+
+function hideAnswerCheck(){
+  console.log(`HIDEANSWERCHECK FIRED`)
+  answerCheckHtmlElement.style.display = 'none';
 };
 
 
@@ -306,6 +324,7 @@ function quizEnd(){
   console.log(`The timeLeft at quizEnd is ${timeLeft}`);
   console.log(`The currentScore at quizEnd is ${currentScore}`);
 
+
   mostRecentScore = currentScore;
   currentScore = 0;
   timer.style.display = 'none';
@@ -319,6 +338,7 @@ function quizEnd(){
   document.querySelector('#scoreSubmitValue').innerHTML = mostRecentScore;
   document.querySelector('#currentScore').innerHTML = currentScore;
   timeLeftHtmlElement.innerHTML = 100;
+  document.querySelector('#answerCheck').innerHTML = '';
 
   if(timeLeft <= 0){ 
       console.log(`The question number at quizEnd timeout path is ${pageNumber}`);
