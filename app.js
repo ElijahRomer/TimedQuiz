@@ -1,48 +1,53 @@
 console.log('if this is logged, app.js is linked correctly');
 
-//want to add a quiz End page that displays score and then provides option to add name and input to local storage
-
-//add a highscores page that pulls from local storage
-
 //VARIABLES
 
-    //can change these variables depending on quiz format.
+    //QUIZ CONTROL PANEL can change these variables depending on quiz format.
 let totalNumberOfQuestions = 6; //must also add additional questions to the HTML.
 let quizDurationAtStart = 100; //in seconds
 let quizTimerLoopDelayInterval = 1000; //default 1000 in milliseconds, sets delay for each timer tick
+let incorrectAnswerTimeLeftPenalty = 10; //Number of seconds subtracted from timer for incorrect answer
 
-    //Do not change the below variables
+//DO NOT CHANGE BELOW VARIABLES
 
-let pageNumber ='0';//previously named question number
+    //Game Value Variables
+let pageNumber ='0';
 let highScoresPageNumber = totalNumberOfQuestions + 1;
 let buttonSelector;
 let currentAnswerButtonsShown;
-let timer = document.querySelector('#timeLeftDisplay');
-let timeLeftHtmlElement = document.querySelector('#timeLeft');
 let timeLeft = quizDurationAtStart;
 let countDown;
+let restartQuizValue = false;
+let currentScore = 0;
+let mostRecentScore = 0;
+  //Highscore List
+let userNameScoreSubmitString;
+let scoreSubmitTimeStamp;
+let formattedTimeStamp;
+
+  //Game UI Element Variables
+let timer = document.querySelector('#timeLeftDisplay');
+let timeLeftHtmlElement = document.querySelector('#timeLeft');
 let startQuizButton = document.querySelector('#quizStart');
 let restartQuizButton = document.querySelector('#restartQuiz');
 let currentScoreDisplay = document.querySelector('#currentScoreDisplay');
-let restartQuizValue = false;
 let answerCheckHtmlElement = document.querySelector('#answerCheck');
-let currentScore = 0;
-let mostRecentScore = 0;
 let mostRecentScoreDisplay = document.querySelector('#mostRecentScoreDisplay');
 let viewHighScoresButton = document.querySelector('#viewHighScores');
 let clearHighScoreListButton = document.querySelector('#clearHighScoreList');
-
-//let answerCheckTextDisplay = document.querySelector('#answerCheck').innerHTML;
 let highScoresPage = document.querySelector('#highScorePage');
 let returnToMainMenuButtons = document.querySelectorAll('.returnToMainMenu');
+let highScoreListUL = document.querySelector('#highScoreList');
+let submitScoreButton = document.querySelector('#submitScoreButton');
+let userNameInputField = document.querySelector('#userNameInput');
+let saveScoreForm = document.querySelector('#saveScoreForm');
+
 
 
 //EVENT LISTENERS (answer buttons are within for loop in quizProgress.)
 
-
+//Invoke loadEventListeners on DOMContentLoaded event
 document.addEventListener('DOMContentLoaded', loadEventListeners);
-
-//FUNCTIONS
 
 function loadEventListeners(){
   console.log('LOADEVENTLISTENERS FIRED');
@@ -58,6 +63,8 @@ function loadEventListeners(){
     //there is another event listener within a for loop in the quizProgress function, not included here as it must dynamically progress when a new question is answered.
 };
 
+
+//FUNCTIONS
 
 
 function startQuiz(){
@@ -107,7 +114,6 @@ function quizTimer(){
 }};
 
 
-
 function advancePageNumber() {
   console.log(`ADVANCEPAGENUMBER FIRED`)
   pageNumber = parseInt(pageNumber);
@@ -119,9 +125,17 @@ function advancePageNumber() {
 
 
 
-function quizProgress(){
+function quizProgress(eventObject){
   console.log('QUIZPROGRESS FIRED');
   if(timeLeft > 0){
+    console.log(`timeLeft at quizProgress registers as ${timeLeft}`);
+    console.log(`eventObject at quizProgress is ${eventObject}`)
+      answerCheckPenalty: if (eventObject === undefined) {
+        break answerCheckPenalty;
+      } else if (eventObject.target.id === "incorrect") {
+        timeLeft -= incorrectAnswerTimeLeftPenalty;
+        break answerCheckPenalty;
+      }
     document.querySelector(`#question${pageNumber}`).style.display = 'none';
     advancePageNumber();
     console.log(`The pageNumber at quizProgress has been updated to ${pageNumber}`);
@@ -174,22 +188,6 @@ function returnToMainMenu(){
 }
 
 
-
-
-let highScoreListUL = document.querySelector('#highScoreList');
-let submitScoreButton = document.querySelector('#submitScoreButton');
-let userNameInputField = document.querySelector('#userNameInput');
-let saveScoreForm = document.querySelector('#saveScoreForm');
-let userNameScoreSubmitString;
-let scoreSubmitTimeStamp;
-// let highScoreListArray = [];
-let formattedTimeStamp;
-
-console.log(highScoreListUL);
-console.log(userNameInputField);
-console.log(highScoreListUL);
-console.log(submitScoreButton);
-console.log(saveScoreForm);
 
 function addHighScore(eventObject){
   console.log('ADDHIGHSCORE FIRED');
@@ -342,70 +340,3 @@ function quizEnd(){
       document.querySelector(`#question${pageNumber}`).style.display = 'block';
   };
 };
-
-
-//JAVASCRIPT ELEMENTS TO CREATE*******************
-//make a variable for currentTimeLeft
-//make a variable for element currentTimeLeftDisplay
-//make a variable for name element user input at beginning of game
-//make a variable for score 
-//make a variable for concatenated value of score and name called scoreItem
-//make a variable for highScores and set it equal to an array
-
-//add event listener to quiz start button
-//add event listener to high score submit button
-
-//create function for quizProgress
-//create function for timer
-//create function for managing css visibility of each HTML Element
-//create score submit function
-
-//HTML ELEMENTS TO CREATE***********************
-  //quiz landing page
-    //most recent score
-    //start button
-    //view highscore button
-  //each quiz question and answers in a div
-  //view high score page
-
-
-//PSEUDOCODE BELOW********************************
-
-//button click for quiz start
-
-  //quizProgress function
-      //each question and answer display is contained in a separate HTML <div> with css visibility set to hidden by default
-      //each button clicked will hide the current q/a display and reveal the next
-        //if correct, "Correct" will be displayed below element, if incorrect, "Incorrect" will be displayed
-      //when all questions answered, clearInterval on timeLeft, trigger quiz end function
-
-  //timerCountdown function
-      //starts timer ticking backwards, value = timeLeft, dispayed in the innerhtml of currentTimeLeftDisplay
-      //if timer reaches 0, trigger quizEnd function
-  
-  //quiz end function
-      //alert game over
-      //make visible the following:
-        //Top 10 scores
-        //enter name input field
-        //display name (key) 
-        //display score (value)
-        //submit score button - triggers score submit function
-  
-  //SCORE SUBMIT FUNCTION
-      // if statement
-        //if highScores in local storage does not exist (= null), set equal to an empty array
-        //ELSE parse from string to array and set equal to highScores variable
-      //take each value for name and score and set as variable "name" and "score"
-      //push to highscores array formatted as an object combining the two into a key value pair
-      //(highScores.push({[name]: score});)
-      //convert highscores back to a string and set = to highScores key in localStorage
-      //run view scores function
-
-  //VIEW SCORE FUNCTION
-      //set visibility for all other pages to hidden
-      //set visibility for high score page to visible, position absolute
-      //access local storage and convert highScores string into an array
-      //create for loop to parse through array and append each index into an Li
-      //append each li into the ul on the highscores page.
-
