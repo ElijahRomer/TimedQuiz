@@ -5,7 +5,7 @@ console.log('if this is logged, app.js is linked correctly');
     //QUIZ CONTROL PANEL can change these variables depending on quiz format.
 let totalNumberOfQuestions = 6; //must also add additional questions to the HTML.
 let quizDurationAtStart = 100; //in seconds
-let quizTimerLoopDelayInterval = 10000; //default 1000 in milliseconds, sets delay for each timer tick
+let quizTimerLoopDelayInterval = 1000; //default 1000 in milliseconds, sets delay for each timer tick
 let incorrectAnswerTimeLeftPenalty = 10; //Number of seconds subtracted from timer for incorrect answer
 
 //DO NOT CHANGE BELOW VARIABLES

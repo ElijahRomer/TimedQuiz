@@ -1,6 +1,6 @@
 :root{
 --salmon: #FC766AFF;
---light: #B0B8B4FF;
+--light: rgb(206, 206, 206);
 --dark: #184A45FF;
 
 }
@@ -29,11 +29,19 @@ body{
   box-shadow: 1px 1px 2px black, 0 0 25px red, 0 0 5px rgb(131, 0, 0);
 }
 
-#currentScoreDisplay {
+#HUD {
+  background-color: red;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+}
+
+/* #currentScoreDisplay {
   position: absolute;
   right:10px;
   top:0px;
-}
+} */
 
 .quizQuestion{
   display: none;
@@ -42,8 +50,9 @@ body{
   border-radius: 15px;
   text-align: center;
   margin: 10px;
-  height: 300px;
+  height: fit-content;
   box-shadow: 10px 10px 10px black;
+  transition: 2s;
 }
 
 .quizEndPage{
@@ -57,8 +66,9 @@ body{
   border: var(--dark) solid 5px;
   border-radius: 15px;
   text-align: center;
-  margin: 10px;
-  height: 300px;
+  margin: 10px auto;
+  height: fit-content;
+  max-width: 700px;
   box-shadow: 10px 10px 10px black;
 } 
 
@@ -66,7 +76,7 @@ body{
 #viewHighScores{
   position: relative;
   width: 50%;
-  margin: 5% auto 0 auto;
+  margin: 5% auto;
   border: 2px solid green;
   text-align: center;
   color:white;
@@ -107,10 +117,12 @@ body{
 
 #currentScoreDisplay{
   display: none;
+  font-size: 1em;
 }
 
 #timeLeftDisplay{
   display: none;
+  font-size: 1em;
 }
 
 #mostRecentScoreDisplay{
@@ -125,3 +137,32 @@ body{
   display:none;
 }
 
+.questionText {
+  margin:5px 5px;
+}
+
+.quizQuestion ol {
+  margin: 3% 7% 3% 0;
+}
+
+.quizQuestion li {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+  background-color: grey;
+  list-style: none;
+  margin: 10px 0;
+  padding: 3%;
+  height: fit-content;
+
+
+}
+
+@media screen and (max-width: 335px) {
+  #HUD{
+    flex-direction: column;
+    align-items: center;
+    background-color: blue;
+  }
+}
