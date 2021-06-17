@@ -176,7 +176,7 @@ body{
   margin: 0 auto;
   font-size: larger;
   font-weight: bolder;
-  animation: fadeInOut 3.1s;
+  animation: fadeInOut 2.1s;
 }
 
 #saveScoreForm p{
