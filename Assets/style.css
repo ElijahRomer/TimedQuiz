@@ -17,7 +17,9 @@ body{
   font-family: 'Ubuntu', sans-serif;
   font-size: x-large;
   width: 50%;
-  height: 70px;
+  height: fit-content;
+  min-height: 70px;
+  text-align: center;
 }
 
 #quizStart:hover{
