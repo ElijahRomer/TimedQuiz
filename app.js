@@ -7,6 +7,8 @@ let totalNumberOfQuestions = 6; //must also add additional questions to the HTML
 let quizDurationAtStart = 100; //in seconds
 let quizTimerLoopDelayInterval = 1000; //default 1000 in milliseconds, sets delay for each timer tick
 let incorrectAnswerTimeLeftPenalty = 10; //Number of seconds subtracted from timer for incorrect answer
+let pageTransitionDuration = 500; // in milliseconds be sure to update animation duration values in the CSS classes fade-in and fade-out as well.
+let answerCheckPersistDuration = 2000;
 
 //DO NOT CHANGE BELOW VARIABLES
 
@@ -69,13 +71,16 @@ function loadEventListeners(){
 
 function startQuiz(){
   console.log('STARTQUIZ FIRED');
-  timer.style.display = 'block';
-  restartQuizButton.style.display = 'block';
-  currentScoreDisplay.style.display = 'block';
-  answerCheckHtmlElement.style.display = 'block';
+  // revealHUD();
   quizTimer();
   quizProgress();
   console.log('STARTQUIZ FINISHED');
+};
+
+function revealHUD(){
+  timer.style.display = 'block';
+  restartQuizButton.style.display = 'block';
+  currentScoreDisplay.style.display = 'block';
 };
 
 
@@ -83,6 +88,7 @@ function startQuiz(){
 function restartQuiz(){
   console.log('RESTARTQUIZ FIRED')
    restartQuizValue = true;
+   answerCheckHtmlElement.style.display = 'none';
   console.log(`restartQuizValue is now ${restartQuizValue}. Firing quizTimer.`);
   quizTimer();
 };
@@ -136,9 +142,18 @@ function quizProgress(eventObject){
         timeLeft -= incorrectAnswerTimeLeftPenalty;
         break answerCheckPenalty;
       }
-    document.querySelector(`#question${pageNumber}`).style.display = 'none';
-    advancePageNumber();
+
+    // ******* fade transition inserted here somewhere
+    fadeOut();
+    setTimeout(function() {
+    console.log(`Page number at quizProgress is ${pageNumber}`)
+    // document.querySelector(`#question${pageNumber}`).style.display = 'none';
+     advancePageNumber();
+     revealHUD();
+     fadeIn();
     console.log(`The pageNumber at quizProgress has been updated to ${pageNumber}`);
+
+
     if (pageNumber <= totalNumberOfQuestions){
       document.querySelector(`#question${pageNumber}`).style.display = 'block';
       buttonSelector = `.answerChoiceQ${pageNumber}`;
@@ -150,11 +165,39 @@ function quizProgress(eventObject){
         currentAnswerButtonsShown[i].addEventListener("click", answerCheck);
       };}
     return pageNumber;
-  } else {
+  }, pageTransitionDuration);
+} else {
   console.log(`quizProgress recognized the current question number "${pageNumber}" is greater than number of questions. Firing quizEnd`);
   quizEnd()
   }
 };
+
+
+
+
+function fadeOut() {
+  console.log('FADEOUT FIRED.');
+  console.log(`the question number at fadeOut is #question${pageNumber}`);
+  document.querySelector(`#question${pageNumber}`).classList.add('fade-out');
+    setTimeout(function () {
+      console.log(`SETTING #question${pageNumber} display to NONE`)
+      document.querySelector(`#question${pageNumber}`).style.display = 'none';
+      document.querySelector(`#question${pageNumber}`).classList.remove('fade-out');
+      }, pageTransitionDuration) // change this back to page transition duration
+};
+
+function fadeIn() {
+  console.log('FADEIN FIRED.');
+  console.log(`the question number at fadeIN is #question${pageNumber}`);
+  // document.querySelector(`#question${pageNumber}`).style.display = 'block';
+  document.querySelector(`#question${pageNumber}`).classList.add('fade-in');
+    setTimeout(function () {
+      console.log(`SETTING #question${pageNumber} display to BLOCK`)
+      // document.querySelector(`#question${pageNumber}`).style.display = 'block';
+      document.querySelector(`#question${pageNumber}`).classList.remove('fade-in');
+      }, pageTransitionDuration)
+};
+
 
 
 
@@ -166,13 +209,13 @@ function answerCheck(eventObject){
       revealAnswerCheck();
       answerCheckHtmlElement.innerHTML = 'Your answer was CORRECT! +1 point.';
       answerCheckHtmlElement.style.backgroundColor = 'limegreen';
-      setTimeout(hideAnswerCheck, 2000);
+      setTimeout(hideAnswerCheck, answerCheckPersistDuration);
       
     } else if(eventObject.target.id === "incorrect"){
       revealAnswerCheck();
       answerCheckHtmlElement.innerHTML = 'Your answer was INCORRECT! 0 points.';
       answerCheckHtmlElement.style.backgroundColor = 'red';
-      setTimeout(hideAnswerCheck, 2000);
+      setTimeout(hideAnswerCheck, answerCheckPersistDuration);
     };
   document.querySelector('#currentScore').innerHTML = currentScore;
 };
@@ -192,7 +235,7 @@ function hideAnswerCheck(){
 function viewHighScores(){
   console.log('VIEWHIGHSCORES FIRED');
   document.querySelector(`#question0`).style.display = 'none';
-  highScoresPage.style.display = 'block';
+  highScoresPage.style.display = 'flex';
 };
 
 
