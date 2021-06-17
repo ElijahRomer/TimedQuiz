@@ -5,10 +5,10 @@ console.log('if this is logged, app.js is linked correctly');
     //QUIZ CONTROL PANEL can change these variables depending on quiz format.
 let totalNumberOfQuestions = 6; //must also add additional questions to the HTML.
 let quizDurationAtStart = 100; //in seconds
-let quizTimerLoopDelayInterval = 1000; //default 1000 in milliseconds, sets delay for each timer tick
+let quizTimerLoopDelayInterval = 100; //default 1000 in milliseconds, sets delay for each timer tick
 let incorrectAnswerTimeLeftPenalty = 10; //Number of seconds subtracted from timer for incorrect answer
 let pageTransitionDuration = 500; // in milliseconds be sure to update animation duration values in the CSS classes fade-in and fade-out as well.
-let answerCheckPersistDuration = 2000;
+let answerCheckPersistDuration = 2000; // must also adjust animation duration in CSS
 
 //DO NOT CHANGE BELOW VARIABLES
 
@@ -30,6 +30,7 @@ let formattedTimeStamp;
   //Game UI Element Variables
 let timer = document.querySelector('#timeLeftDisplay');
 let timeLeftHtmlElement = document.querySelector('#timeLeft');
+let HUD = document.querySelector('#HUD');
 let startQuizButton = document.querySelector('#quizStart');
 let restartQuizButton = document.querySelector('#restartQuiz');
 let currentScoreDisplay = document.querySelector('#currentScoreDisplay');
@@ -78,6 +79,7 @@ function startQuiz(){
 };
 
 function revealHUD(){
+  HUD.style.display = 'flex';
   timer.style.display = 'block';
   restartQuizButton.style.display = 'block';
   currentScoreDisplay.style.display = 'block';
@@ -359,7 +361,24 @@ function clearHighScoreList(){
   }
 };
 
-
+function resetQuiz(){
+  mostRecentScore = currentScore;
+  currentScore = 0;
+  timer.style.display = 'none';
+  
+  HUD.style.display = 'none';
+  restartQuizButton.style.display = 'none';
+  currentScoreDisplay.style.display = 'none';
+  answerCheckHtmlElement.style.display = 'none';
+  mostRecentScoreDisplay.style.display = 'block';
+  viewHighScoresButton.style.display = 'block';
+  
+  document.querySelector('#mostRecentScore').innerHTML = mostRecentScore;
+  document.querySelector('#scoreSubmitValue').innerHTML = mostRecentScore;
+  document.querySelector('#currentScore').innerHTML = currentScore;
+  timeLeftHtmlElement.innerHTML = 100;
+  document.querySelector('#answerCheck').innerHTML = '';
+}
 
 function quizEnd(){
   console.log('QUIZEND FIRED');
@@ -367,22 +386,8 @@ function quizEnd(){
   console.log(`The timeLeft at quizEnd is ${timeLeft}`);
   console.log(`The currentScore at quizEnd is ${currentScore}`);
 
-
-  mostRecentScore = currentScore;
-  currentScore = 0;
-  timer.style.display = 'none';
+  resetQuiz();
   
-  restartQuizButton.style.display = 'none';
-  currentScoreDisplay.style.display = 'none';
-  answerCheckHtmlElement.style.display = 'none';
-  mostRecentScoreDisplay.style.display = 'block';
-  viewHighScoresButton.style.display = 'block';
-  document.querySelector('#mostRecentScore').innerHTML = mostRecentScore;
-  document.querySelector('#scoreSubmitValue').innerHTML = mostRecentScore;
-  document.querySelector('#currentScore').innerHTML = currentScore;
-  timeLeftHtmlElement.innerHTML = 100;
-  document.querySelector('#answerCheck').innerHTML = '';
-
   if(timeLeft <= 0){ 
       console.log(`The question number at quizEnd timeout path is ${pageNumber}`);
       timeLeft = quizDurationAtStart;
